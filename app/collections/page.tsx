@@ -43,7 +43,7 @@ export default async function Collections() {
                         )}
                       </p>
                       <span className="text-xs text-muted font-sans">
-                        {item.createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
+                        {item.createdAt.toLocaleDateString("en-US", { timeZone: 'Asia/Kolkata', month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
                       </span>
                     </div>
                     {item.creator && (

@@ -21,7 +21,7 @@ export default async function Notes() {
           {notes.map((note) => (
             <article key={note.id} className="mb-8">
               <p className="text-xs text-muted font-sans m-0 mb-1">
-                {note.createdAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+                {note.createdAt.toLocaleDateString('en-US', { timeZone: 'Asia/Kolkata', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
               </p>
               <Link href={`/notes/${note.slug}`} className="block font-semibold text-lg" style={{ textDecoration: 'none' }}>
                 {note.title}

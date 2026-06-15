@@ -68,6 +68,7 @@ export default async function Guestbook() {
                 <p className="m-0 text-sm">{entry.message}</p>
                 <p className="text-xs text-muted mt-2 m-0 font-sans">
                   {entry.createdAt.toLocaleDateString("en-US", {
+                    timeZone: 'Asia/Kolkata',
                     month: "long",
                     day: "numeric",
                     year: "numeric",

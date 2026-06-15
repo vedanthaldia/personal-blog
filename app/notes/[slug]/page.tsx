@@ -27,6 +27,7 @@ export default async function NotePage({ params }: { params: Promise<{ slug: str
         <header className="mb-8">
           <p className="text-sm text-muted font-sans m-0 mb-2">
             {note.createdAt.toLocaleDateString("en-US", {
+              timeZone: 'Asia/Kolkata',
               month: "long",
               day: "numeric",
               year: "numeric",
@@ -57,7 +58,7 @@ export default async function NotePage({ params }: { params: Promise<{ slug: str
                   <p className="text-sm font-sans font-semibold m-0">{comment.name}</p>
                   <p className="text-xs text-muted font-sans m-0">
                     {comment.createdAt.toLocaleDateString("en-US", {
-                      month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"
+                      timeZone: 'Asia/Kolkata', month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit"
                     })}
                   </p>
                 </div>
