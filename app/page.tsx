@@ -1,65 +1,93 @@
-import Image from "next/image";
+import prisma from "@/lib/prisma";
+import Link from 'next/link';
 
-export default function Home() {
+
+export default async function Home() {
+  // Fetch Now Activity
+  const now = await prisma.nowActivity.findUnique({
+    where: { id: 'singleton' }
+  });
+
+  // Fetch recent Notes (limit to 3 for the homepage)
+  const recentNotes = await prisma.note.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 3
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div>
+      <header className="mb-8">
+        <h1>Vedant</h1>
+        <p className="text-muted italic">A small place on the internet.</p>
+      </header>
+
+      <section className="mb-8">
+        <h2 className="text-sm font-sans text-muted mb-4 uppercase tracking-wider">Currently</h2>
+        {now ? (
+          <div className="flex-col gap-4">
+            {now.building && (
+              <div>
+                <span className="font-sans text-sm text-muted block mb-1">Building</span>
+                <p className="m-0">{now.building}</p>
+              </div>
+            )}
+            {now.learning && (
+              <div className="mt-4">
+                <span className="font-sans text-sm text-muted block mb-1">Learning</span>
+                <p className="m-0">{now.learning}</p>
+              </div>
+            )}
+            {now.reading && (
+              <div className="mt-4">
+                <span className="font-sans text-sm text-muted block mb-1">Reading</span>
+                <p className="m-0">{now.reading}</p>
+              </div>
+            )}
+            {now.listeningTo && (
+              <div className="mt-4">
+                <span className="font-sans text-sm text-muted block mb-1">Listening To</span>
+                <p className="m-0">{now.listeningTo}</p>
+              </div>
+            )}
+            {now.thinkingAbout && (
+              <div className="mt-4">
+                <span className="font-sans text-sm text-muted block mb-1">Thinking About</span>
+                <p className="m-0">{now.thinkingAbout}</p>
+              </div>
+            )}
+            <p className="text-sm text-muted mt-8 font-sans">
+              Last updated: {now.updatedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </p>
+          </div>
+        ) : (
+          <p className="text-muted italic text-sm">No recent updates.</p>
+        )}
+      </section>
+
+      <hr />
+
+      <section>
+        <h2 className="text-sm font-sans text-muted mb-4 uppercase tracking-wider">Recent Notes</h2>
+        {recentNotes.length > 0 ? (
+          <div className="flex-col gap-4">
+            {recentNotes.map((note) => (
+              <div key={note.id} className="mb-4">
+                <p className="text-sm text-muted font-sans m-0 mb-1">
+                  {note.createdAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
+                <Link href={`/notes/${note.slug}`} className="block font-semibold" style={{ textDecoration: 'none' }}>
+                  {note.title}
+                </Link>
+              </div>
+            ))}
+            <div className="mt-6">
+              <Link href="/notes" className="text-sm font-sans">View all notes &rarr;</Link>
+            </div>
+          </div>
+        ) : (
+          <p className="text-muted italic text-sm">No notes yet.</p>
+        )}
+      </section>
     </div>
   );
 }

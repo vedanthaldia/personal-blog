@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Note {
+  id        String    @id @default(uuid())
+  slug      String    @unique
+  title     String
+  content   String    // Markdown
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  name      String
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model GuestbookEntry {
+  id        String   @id @default(cuid())
+  name      String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model CollectionEntry {
+  id        String   @id @default(uuid())
+  category  String   // e.g., 'Music', 'Articles', 'Books'
+  title     String
+  creator   String?
+  link      String?
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model NowActivity {
+  id            String   @id @default("singleton")
+  building      String?
+  learning      String?
+  listeningTo   String?
+  reading       String?
+  thinkingAbout String?
+  updatedAt     DateTime @updatedAt
+}
